@@ -1,0 +1,8 @@
+/backup
+/lib
+/*/backup
+*.bak
+*.exe
+*.dll
+*.err
+FileDropper
