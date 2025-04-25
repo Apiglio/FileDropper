@@ -1,13 +1,13 @@
 object Form_FileDropper: TForm_FileDropper
-  Left = 914
-  Height = 283
-  Top = 453
-  Width = 370
+  Left = 705
+  Height = 480
+  Top = 256
+  Width = 579
   AllowDropFiles = True
   BorderStyle = bsSizeToolWin
   Caption = 'Apiglio File Dropper'
-  ClientHeight = 283
-  ClientWidth = 370
+  ClientHeight = 480
+  ClientWidth = 579
   DragMode = dmAutomatic
   FormStyle = fsSystemStayOnTop
   OnClose = FormClose
@@ -16,7 +16,7 @@ object Form_FileDropper: TForm_FileDropper
   OnDropFiles = FormDropFiles
   Position = poScreenCenter
   LCLVersion = '1.8.4.0'
-  object Panel_Openner: TPanel
+  object Panel_Opener: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
@@ -29,35 +29,35 @@ object Form_FileDropper: TForm_FileDropper
     Width = 120
     Caption = 'File Opener'
     TabOrder = 0
-    OnClick = Panel_OpennerClick
-    OnMouseMove = Panel_OpennerMouseMove
+    OnClick = Panel_OpenerClick
+    OnMouseMove = Panel_OpenerMouseMove
   end
   object Panel_OpennerDetailed: TPanel
-    AnchorSideLeft.Control = Panel_Openner
+    AnchorSideLeft.Control = Panel_Opener
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = Panel_Openner
+    AnchorSideTop.Control = Panel_Opener
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Panel_Openner
+    AnchorSideBottom.Control = Panel_Opener
     AnchorSideBottom.Side = asrBottom
     Left = 120
     Height = 80
     Top = 0
-    Width = 250
+    Width = 459
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabOrder = 1
     OnResize = Panel_OpennerDetailedResize
   end
   object Panel_Archiver: TPanel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Panel_Openner
+    AnchorSideTop.Control = Panel_Opener
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Panel_Openner
+    AnchorSideRight.Control = Panel_Opener
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 80
+    Height = 320
     Top = 80
     Width = 120
     Anchors = [akTop, akLeft, akRight]
@@ -70,13 +70,13 @@ object Form_FileDropper: TForm_FileDropper
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Panel_Archiver
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Panel_Openner
+    AnchorSideRight.Control = Panel_Opener
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 123
-    Top = 160
+    Height = 80
+    Top = 400
     Width = 120
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'Text Formatter'
@@ -93,11 +93,59 @@ object Form_FileDropper: TForm_FileDropper
     AnchorSideBottom.Control = Panel_Archiver
     AnchorSideBottom.Side = asrBottom
     Left = 120
-    Height = 80
+    Height = 320
     Top = 80
-    Width = 250
+    Width = 459
     Anchors = [akTop, akLeft, akRight, akBottom]
+    ClientHeight = 320
+    ClientWidth = 459
     TabOrder = 4
+    object Memo_FileInfo: TMemo
+      AnchorSideLeft.Control = Panel_ArchiverDetailed
+      AnchorSideTop.Control = Panel_ArchiverDetailed
+      AnchorSideRight.Control = Panel_Readonly
+      Left = 1
+      Height = 80
+      Top = 1
+      Width = 397
+      Anchors = [akTop, akLeft, akRight]
+      Color = clForm
+      Lines.Strings = (
+        'File Name:'
+        'File Path:'
+        'Path for Code:'
+        'File Size:'
+      )
+      TabOrder = 0
+    end
+    object Panel_Readonly: TPanel
+      AnchorSideLeft.Control = Memo_FileInfo
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel_ArchiverDetailed
+      AnchorSideRight.Control = Panel_ArchiverDetailed
+      AnchorSideRight.Side = asrBottom
+      Left = 398
+      Height = 40
+      Top = 1
+      Width = 60
+      Anchors = [akTop, akRight]
+      Caption = '只读'
+      TabOrder = 1
+    end
+    object Panel_Hidden: TPanel
+      AnchorSideLeft.Control = Panel_Readonly
+      AnchorSideTop.Control = Panel_Readonly
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel_ArchiverDetailed
+      AnchorSideRight.Side = asrBottom
+      Left = 398
+      Height = 40
+      Top = 41
+      Width = 60
+      Anchors = [akTop, akLeft, akRight]
+      Caption = '隐藏'
+      TabOrder = 2
+    end
   end
   object Panel_FormatterDetailed: TPanel
     AnchorSideLeft.Control = Panel_Formatter
@@ -108,18 +156,18 @@ object Form_FileDropper: TForm_FileDropper
     AnchorSideBottom.Control = Panel_Formatter
     AnchorSideBottom.Side = asrBottom
     Left = 120
-    Height = 123
-    Top = 160
-    Width = 250
+    Height = 80
+    Top = 400
+    Width = 459
     Anchors = [akTop, akLeft, akRight, akBottom]
-    ClientHeight = 123
-    ClientWidth = 250
+    ClientHeight = 80
+    ClientWidth = 459
     TabOrder = 5
     object Memo_Formatter_Tmp: TMemo
       Left = 1
-      Height = 121
+      Height = 78
       Top = 1
-      Width = 248
+      Width = 457
       Align = alClient
       ScrollBars = ssBoth
       TabOrder = 0
