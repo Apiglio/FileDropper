@@ -25,7 +25,21 @@ type
         constructor Create;
         destructor Destroy; override;
     end;
-
+{
+    TFileDropperArchiver = class
+    public
+        DisplayName : String;
+        Destination : String;
+    protected
+        procedure SetJSON(json_str:string);
+        function GetJSON:string;
+    public
+        property AsJSON:string read GetJSON write SetJSON;
+    public
+        constructor Create;
+        destructor Destroy; override;
+    end;
+}
     TFileDropper = class
     private
         FFileOpeners : TList;
@@ -153,7 +167,7 @@ begin
     try
         Reg.RootKey:=HKEY_CURRENT_USER;
         Idx:=0;
-        if Reg.OpenKey('Software\ApiglioToolBox\File_Dropper\Openner',false) then begin
+        if Reg.OpenKey('Software\ApiglioToolBox\File_Dropper\Opener',false) then begin
             while true do begin
                 Key:=IntToStr(Idx);
                 if not Reg.ValueExists(Key) then break;
@@ -179,8 +193,8 @@ begin
     Reg:=TRegistry.Create;
     try
         Reg.RootKey:=HKEY_CURRENT_USER;
-        Reg.DeleteKey('Software\ApiglioToolBox\File_Dropper\Openner');
-        Reg.OpenKey('Software\ApiglioToolBox\File_Dropper\Openner',true);
+        Reg.DeleteKey('Software\ApiglioToolBox\File_Dropper\Opener');
+        Reg.OpenKey('Software\ApiglioToolBox\File_Dropper\Opener',true);
         for idx:=FFileOpeners.Count-1 downto 0 do begin
             Reg.WriteString(
                 IntToStr(idx),

@@ -14,9 +14,14 @@ type
     private
         ButtonIcon:TImage;
         ButtonTitle:TLabel;
+        FHover:boolean;
     protected
         procedure DoPanelClick(Sender: TObject);
         procedure DoPanelMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+        procedure DoResize(Sender: TObject);
+        procedure DoMouseEnter(Sender: TObject);
+        procedure DoMouseLeave(Sender: TObject);
+        procedure DoPaint(Sender: TObject);
     public
         ButtonId:Integer;
     public
@@ -25,19 +30,22 @@ type
         constructor Create(TheOwner: TComponent); override;
         destructor Destroy; override;
     end;
-    TFileDropperPhase  = (fdpOveriew, fdpOpenner, fpdArchiver, fpdFormatter);
+    TFileDropperPhase  = (fdpOveriew, fdpOpener, fpdArchiver, fpdFormatter);
 
 
     { TForm_FileDropper }
 
     TForm_FileDropper = class(TForm)
+      Memo_FileInfo: TMemo;
       Memo_Formatter_Tmp: TMemo;
+      Panel_Readonly: TPanel;
       Panel_FormatterDetailed: TPanel;
       Panel_ArchiverDetailed: TPanel;
       Panel_Formatter: TPanel;
       Panel_Archiver: TPanel;
         Panel_OpennerDetailed: TPanel;
-        Panel_Openner: TPanel;
+        Panel_Opener: TPanel;
+        Panel_Hidden: TPanel;
         procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
         procedure FormCreate(Sender: TObject);
         procedure FormDeactivate(Sender: TObject);
@@ -47,8 +55,8 @@ type
         procedure Panel_FormatterClick(Sender: TObject);
         procedure Panel_FormatterMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
         procedure Panel_OpennerDetailedResize(Sender: TObject);
-        procedure Panel_OpennerClick(Sender: TObject);
-        procedure Panel_OpennerMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+        procedure Panel_OpenerClick(Sender: TObject);
+        procedure Panel_OpenerMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     private
         FDetailedButtons:TList;
         procedure DetailedButtonClick(Sender: TObject);
@@ -87,6 +95,39 @@ begin
     OnMouseUp(Self,Button,Shift,X,Y);
 end;
 
+procedure TDetailedButton.DoResize(Sender: TObject);
+begin
+    if Self.Height<32 then begin
+        ButtonIcon.Visible:=false;
+    end else begin
+        ButtonIcon.Visible:=true;
+    end;
+end;
+
+procedure TDetailedButton.DoMouseEnter(Sender: TObject);
+begin
+    FHover:=true;
+    Paint;
+end;
+
+procedure TDetailedButton.DoMouseLeave(Sender: TObject);
+begin
+    FHover:=false;
+    Paint;
+end;
+
+procedure TDetailedButton.DoPaint(Sender: TObject);
+begin
+    Canvas.Brush.Style:=bsClear;
+    Canvas.Pen.Width:=5;
+    if FHover then Canvas.Pen.Color:=$cfcfcf else Canvas.Pen.Color:=clWhite;;
+    Canvas.Rectangle(0,0,Self.Width-1,Height-1);
+    Canvas.Pen.Width:=1;
+    Canvas.Pen.Color:=clBlack;
+    Canvas.Rectangle(-1,-1,Self.Width,Height);
+
+end;
+
 procedure TDetailedButton.LoadIcon(icon:Graphics.TBitmap);
 begin
     ButtonIcon.Picture.Bitmap:=icon;
@@ -110,6 +151,8 @@ begin
     ButtonIcon.AutoSize:=true;
     ButtonIcon.OnClick:=@DoPanelClick;
     ButtonIcon.OnMouseUp:=@DoPanelMouseUp;
+    ButtonIcon.OnMouseEnter:=@DoMouseEnter;
+    ButtonIcon.OnMouseLeave:=@DoMouseLeave;
 
     ButtonTitle:=TLabel.Create(Self);
     ButtonTitle.Parent:=Self;
@@ -121,8 +164,16 @@ begin
     ButtonTitle.AutoSize:=true;
     ButtonTitle.OnClick:=@DoPanelClick;
     ButtonTitle.OnMouseUp:=@DoPanelMouseUp;
+    ButtonTitle.OnMouseEnter:=@DoMouseEnter;
+    ButtonTitle.OnMouseLeave:=@DoMouseLeave;
 
+    Self.OnResize:=@DoResize;
+    Self.OnPaint:=@DoPaint;
+    Self.OnMouseEnter:=@DoMouseEnter;
+    Self.OnMouseLeave:=@DoMouseLeave;
     Self.Color:=clWhite;
+    Self.FHover:=false;
+
 
 end;
 
@@ -242,9 +293,9 @@ begin
     end;
 end;
 
-procedure TForm_FileDropper.Panel_OpennerClick(Sender: TObject);
+procedure TForm_FileDropper.Panel_OpenerClick(Sender: TObject);
 begin
-    if FPhase=fdpOpenner then begin
+    if FPhase=fdpOpener then begin
         Phase_Overview;
         ReleaseAction:=false;
     end else begin
@@ -253,7 +304,7 @@ begin
     end;
 end;
 
-procedure TForm_FileDropper.Panel_OpennerMouseMove(Sender: TObject;
+procedure TForm_FileDropper.Panel_OpenerMouseMove(Sender: TObject;
     Shift: TShiftState; X, Y: Integer);
 begin
     if ReleaseAction then Phase_Openner;
@@ -292,7 +343,7 @@ end;
 
 procedure TForm_FileDropper.Phase_Overview;
 begin
-    Panel_Openner.Height:=80;
+    Panel_Opener.Height:=80;
     Panel_Archiver.Height:=80;
     //Panel_Formatter.Height:=80; //因为有anchor最后一个不需要设置高度
     Width:=120;
@@ -302,17 +353,17 @@ end;
 
 procedure TForm_FileDropper.Phase_Openner;
 begin
-    Panel_Openner.Height:=320; //480-2*80;
+    Panel_Opener.Height:=320; //480-2*80;
     Panel_Archiver.Height:=80;
     //Panel_Formatter.Height:=80; //因为有anchor最后一个不需要设置高度
     Width:=640;
     Height:=480;
-    FPhase:=fdpOpenner;
+    FPhase:=fdpOpener;
 end;
 
 procedure TForm_FileDropper.Phase_Archiver;
 begin
-    Panel_Openner.Height:=80;
+    Panel_Opener.Height:=80;
     Panel_Archiver.Height:=320; //480-2*80;
     //Panel_Formatter.Height:=80; //因为有anchor最后一个不需要设置高度
     Width:=640;
@@ -322,7 +373,7 @@ end;
 
 procedure TForm_FileDropper.Phase_Formatter;
 begin
-    Panel_Openner.Height:=80;
+    Panel_Opener.Height:=80;
     Panel_Archiver.Height:=80;
     //Panel_Formatter.Height:=320; //480-2*80; //因为有anchor最后一个不需要设置高度
     Width:=640;
