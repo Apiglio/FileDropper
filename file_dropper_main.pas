@@ -52,22 +52,13 @@ type
         procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
         procedure FormCreate(Sender: TObject);
         procedure FormDeactivate(Sender: TObject);
-        procedure FormDragDrop(Sender, Source: TObject; X, Y: Integer);
-        procedure FormDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
-        procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
         procedure Panel_ArchiverClick(Sender: TObject);
-        procedure Panel_ArchiverDragDrop(Sender, Source: TObject; X, Y: Integer);
-        procedure Panel_ArchiverDragOver(Sender, Source: TObject; X,Y: Integer; State: TDragState; var Accept: Boolean);
         procedure Panel_ArchiverMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
         procedure Panel_FormatterClick(Sender: TObject);
         procedure Panel_FormatterDetailedResize(Sender: TObject);
-        procedure Panel_FormatterDragDrop(Sender, Source: TObject; X, Y: Integer);
-        procedure Panel_FormatterDragOver(Sender, Source: TObject; X,Y: Integer; State: TDragState; var Accept: Boolean);
         procedure Panel_FormatterMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
         procedure Panel_OpenerDetailedResize(Sender: TObject);
         procedure Panel_OpenerClick(Sender: TObject);
-        procedure Panel_OpenerDragDrop(Sender, Source: TObject; X, Y: Integer);
-        procedure Panel_OpenerDragOver(Sender, Source: TObject; X, Y: Integer;State: TDragState; var Accept: Boolean);
         procedure Panel_OpenerMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     private
         FDetailedButtons:TList;
@@ -89,12 +80,9 @@ type
         procedure Phase_Formatter;
     end;
 
-    function ILCombine(pidl1, pidl2: PItemIDList): PItemIDList; stdcall; external 'shell32.dll' name 'ILCombine';
-
 var
     Form_FileDropper: TForm_FileDropper;
     FileDropper:TFileDropper;
-    //CurrentFileName:string;
     ReleaseAction:boolean;
 
 implementation
@@ -221,10 +209,10 @@ begin
     FileDropper.SaveProperties;
     FileDropper.Free;
 
-    //{
+
     RevokeDragDrop(Self.Handle);
     OleUninitialize;
-    //}
+
 end;
 
 procedure TForm_FileDropper.FormCreate(Sender: TObject);
@@ -233,12 +221,10 @@ var idx:integer;
     tmpOpener:TFileDropperOpener;
     tmpFormatter:TFileDropperFormatter;
 begin
-    //{
+
     OleInitialize(nil);
     RegisterDragDrop(Self.Handle, Self as IDropTarget);
     DragAcceptFiles(Self.Handle, true);
-    //}
-    //AllowDropFiles:=true;
 
     FileDropper:=TFileDropper.Create;
     FileDropper.LoadProperties;
@@ -299,24 +285,6 @@ begin
     Phase_Overview;
 end;
 
-procedure TForm_FileDropper.FormDragDrop(Sender, Source: TObject; X, Y: Integer);
-begin
-    //ShowMessage('AA');
-end;
-
-procedure TForm_FileDropper.FormDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
-begin
-    Accept:=true;
-end;
-
-procedure TForm_FileDropper.FormDropFiles(Sender: TObject; const FileNames: array of String);
-begin
-    //if Length(FileNames)<>1 then exit;
-    //CurrentFileName:=FileNames[0];
-    //ReleaseAction:=true;
-
-end;
-
 procedure TForm_FileDropper.Panel_ArchiverClick(Sender: TObject);
 begin
     if FPhase=fpdArchiver then begin
@@ -326,16 +294,6 @@ begin
         Phase_Archiver;
         SetLength(FCurrentFiles,0);
     end;
-end;
-
-procedure TForm_FileDropper.Panel_ArchiverDragDrop(Sender, Source: TObject; X, Y: Integer);
-begin
-    //DragDrop(Source, X, Y);
-end;
-
-procedure TForm_FileDropper.Panel_ArchiverDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
-begin
-    //DragOver(Source, X, Y, State, Accept);
 end;
 
 procedure TForm_FileDropper.Panel_ArchiverMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -368,16 +326,6 @@ begin
     end;
 end;
 
-procedure TForm_FileDropper.Panel_FormatterDragDrop(Sender, Source: TObject; X, Y: Integer);
-begin
-    //DragDrop(Source, X, Y);
-end;
-
-procedure TForm_FileDropper.Panel_FormatterDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
-begin
-    //DragOver(Source, X, Y, State, Accept);
-end;
-
 procedure TForm_FileDropper.Panel_FormatterMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
     if ReleaseAction then Phase_Formatter;
@@ -406,16 +354,6 @@ begin
         Phase_Openner;
         SetLength(FCurrentFiles,0);
     end;
-end;
-
-procedure TForm_FileDropper.Panel_OpenerDragDrop(Sender, Source: TObject; X, Y: Integer);
-begin
-    //DragDrop(Source, X, Y);
-end;
-
-procedure TForm_FileDropper.Panel_OpenerDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
-begin
-    //DragOver(Source, X, Y, State, Accept);
 end;
 
 procedure TForm_FileDropper.Panel_OpenerMouseMove(Sender: TObject;
@@ -512,18 +450,14 @@ var EnumFormatEtc: IEnumFormatEtc;
     FormatEtc: TFormatEtc;
     Fetched: LongInt;
     Medium: TStgMedium;
-    //format_name : array[0..255] of char;
     tmpDrop: HDROP;
     FilePath:array[0..MAX_PATH] of char;
     idx, FileCount:integer;
     unicode_context:utf8String;
 begin
     Result := S_OK;
-    //Memo_Formatter_Example.Lines.Clear;
     if not dataObj.EnumFormatEtc(DATADIR_GET, EnumFormatEtc) = S_OK then exit;
     while EnumFormatEtc.Next(1, FormatEtc, @Fetched) = S_OK do begin
-        //GetClipboardFormatName(FormatEtc.cfFormat, @format_name[0], 255);
-        //Memo_Formatter_Example.Lines.Add(IntToStr(FormatEtc.cfFormat)+' '+pchar(@format_name[0]));
         case FormatEtc.cfFormat of
             CF_HDROP: // InShellDragLoop
             begin

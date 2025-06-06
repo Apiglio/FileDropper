@@ -14,9 +14,6 @@ object Form_FileDropper: TForm_FileDropper
   OnClose = FormClose
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
-  OnDragDrop = FormDragDrop
-  OnDragOver = FormDragOver
-  OnDropFiles = FormDropFiles
   Position = poScreenCenter
   LCLVersion = '1.8.4.0'
   object Panel_Opener: TPanel
@@ -35,8 +32,6 @@ object Form_FileDropper: TForm_FileDropper
     ParentFont = False
     TabOrder = 0
     OnClick = Panel_OpenerClick
-    OnDragDrop = Panel_OpenerDragDrop
-    OnDragOver = Panel_OpenerDragOver
     OnMouseMove = Panel_OpenerMouseMove
   end
   object Panel_OpenerDetailed: TPanel
@@ -73,8 +68,6 @@ object Form_FileDropper: TForm_FileDropper
     ParentFont = False
     TabOrder = 2
     OnClick = Panel_ArchiverClick
-    OnDragDrop = Panel_ArchiverDragDrop
-    OnDragOver = Panel_ArchiverDragOver
     OnMouseMove = Panel_ArchiverMouseMove
   end
   object Panel_Formatter: TPanel
@@ -95,8 +88,6 @@ object Form_FileDropper: TForm_FileDropper
     ParentFont = False
     TabOrder = 3
     OnClick = Panel_FormatterClick
-    OnDragDrop = Panel_FormatterDragDrop
-    OnDragOver = Panel_FormatterDragOver
     OnMouseMove = Panel_FormatterMouseMove
   end
   object Panel_ArchiverDetailed: TPanel
