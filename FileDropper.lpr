@@ -15,7 +15,6 @@ uses
 begin
     RequireDerivedFormResource:=True;
     Application.Initialize;
-    DefaultTextLineBreakStyle := tlbsCR;  // 全局强制使用 CR, 临时的兼容word bug的处理
     Application.CreateForm(TForm_FileDropper, Form_FileDropper);
     Application.Run;
 end.
