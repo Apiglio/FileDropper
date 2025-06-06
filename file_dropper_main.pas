@@ -148,6 +148,7 @@ end;
 procedure TDetailedButton.LoadIcon(icon:Graphics.TBitmap);
 begin
     ButtonIcon.Picture.Bitmap:=icon;
+    if icon=nil then ButtonIcon.Picture.Bitmap.SetSize(1,1);
 end;
 
 procedure TDetailedButton.SetTitle(Title:string);
@@ -254,7 +255,8 @@ begin
         end;
     end;
 
-    //Formatter
+    // 强行补到16个
+    // Formatter
     while FileDropper.GetFormatterCount<16 do begin
         tmpFormatter:=TFileDropperFormatter.Create;
         tmpFormatter.DisplayName:='';
@@ -273,6 +275,7 @@ begin
         tmpFormatter:=newDetailedButton.Actioner as TFileDropperFormatter;
         if tmpFormatter<>nil then begin
             newDetailedButton.SetTitle(tmpFormatter.DisplayName);
+            newDetailedButton.LoadIcon(nil);
         end;
     end;
 
@@ -366,22 +369,21 @@ procedure TForm_FileDropper.DetailedButtonClick(Sender: TObject);
 var buttonId:Integer;
     tmpButton:TDetailedButton;
 begin
-    if not ReleaseAction then exit;
-
     tmpButton:=Sender as TDetailedButton;
     buttonId:=tmpButton.ButtonId;
     if tmpButton.Actioner=nil then exit;
-    if Length(FCurrentFiles)>0 then begin
-        if tmpButton.Actioner is TFileDropperOpener then begin
+    if tmpButton.Actioner is TFileDropperOpener then begin
+        if Length(FCurrentFiles)>0 then begin
+            if not ReleaseAction then exit;
             FileDropper.OpenWinCPs(FCurrentFiles,(Sender as TDetailedButton).ButtonId);
-        end else if tmpButton.Actioner is TFileDropperFormatter then begin
-            FileDropper.Format(Memo_Formatter_Example.Lines,(Sender as TDetailedButton).ButtonId);
-        end else begin
-            //无效Actioner
+            ReleaseAction:=false;
+            Phase_Overview;
         end;
+    end else if tmpButton.Actioner is TFileDropperFormatter then begin
+        FileDropper.Format(Memo_Formatter_Example.Lines,(Sender as TDetailedButton).ButtonId);
+    end else begin
+        //无效Actioner
     end;
-    ReleaseAction:=false;
-    Phase_Overview;
 end;
 
 procedure TForm_FileDropper.DetailedMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -418,11 +420,12 @@ begin
             new_s2:= InputBox('修改替换设置','查找字符串：',old_s2);
             if (new_s2<>'') and (new_s2<>old_s2) then tmpFormmater.OriginText:=new_s2;
             new_s3:= InputBox('修改替换设置','替换字符串：',old_s3);
-            if (new_s3<>'') and (new_s3<>old_s3) then tmpFormmater.OriginText:=new_s3;
+            if (new_s3<>'') and (new_s3<>old_s3) then tmpFormmater.ReplaceText:=new_s3;
             new_s1:= InputBox('修改替换设置','按键提示文字：',old_s1);
-            if (new_s1<>'')   and (new_s1<>old_s1) then tmpOpener.RunParameters:=new_s1;
-            (Sender as TDetailedButton).SetTitle(new_s1);
-
+            if (new_s1<>'') and (new_s1<>old_s1) then begin
+                tmpFormmater.DisplayName:=new_s1;
+                (Sender as TDetailedButton).SetTitle(new_s1);
+            end;
         end else begin
             //无效Actioner
         end;

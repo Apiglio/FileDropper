@@ -234,7 +234,7 @@ begin
     if index>=FFileFormatters.Count then exit;
     with TFileDropperFormatter(Self.FFileFormatters.Items[index]) do begin
         if OriginText='' then exit;
-        //ShellExecute(0,'open',pchar(Utf8ToWinCP(ExecuteFile)),pchar(Utf8ToWinCP(RunParameters+' "'+Filename+'"')),'',SW_NORMAL);
+        text.Text:=StringReplace(text.Text,OriginText,ReplaceText,[rfReplaceAll]);
     end;
 end;
 
