@@ -6,7 +6,7 @@ interface
 
 uses
     Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-    StdCtrls, ExtCtrls, file_dropper, comobj, windows, ActiveX, LazUTF8;
+    StdCtrls, ExtCtrls, file_dropper, comobj, windows, ActiveX, LazUTF8, Clipbrd;
 
 type
 
@@ -381,6 +381,7 @@ begin
         end;
     end else if tmpButton.Actioner is TFileDropperFormatter then begin
         FileDropper.Format(Memo_Formatter_Example.Lines,(Sender as TDetailedButton).ButtonId);
+        Clipboard.AsText:=Memo_Formatter_Example.Text;
     end else begin
         //无效Actioner
     end;
@@ -487,9 +488,12 @@ begin
                     Memo_Formatter_Example.Lines.Clear;
                     Memo_Formatter_Example.Lines.add(unicode_context);
                     GlobalUnlock(Medium.hGlobal);
+                    ReleaseAction:=true;
                 finally
                     ReleaseStgMedium(Medium);
                 end;
+                Application.ProcessMessages;
+                Clipboard.AsText:=Memo_Formatter_Example.Text;
             end;
         end;
     end;
