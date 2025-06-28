@@ -3,7 +3,8 @@ object Form_FileDropper: TForm_FileDropper
   Height = 480
   Top = 256
   Width = 579
-  AllowDropFiles = True
+  AlphaBlend = True
+  AlphaBlendValue = 224
   BorderStyle = bsSizeToolWin
   Caption = 'Apiglio File Dropper'
   ClientHeight = 480
@@ -13,7 +14,6 @@ object Form_FileDropper: TForm_FileDropper
   OnClose = FormClose
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
-  OnDropFiles = FormDropFiles
   Position = poScreenCenter
   LCLVersion = '1.8.4.0'
   object Panel_Opener: TPanel
@@ -28,11 +28,13 @@ object Form_FileDropper: TForm_FileDropper
     Top = 0
     Width = 120
     Caption = 'File Opener'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 0
     OnClick = Panel_OpenerClick
     OnMouseMove = Panel_OpenerMouseMove
   end
-  object Panel_OpennerDetailed: TPanel
+  object Panel_OpenerDetailed: TPanel
     AnchorSideLeft.Control = Panel_Opener
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Panel_Opener
@@ -46,7 +48,7 @@ object Form_FileDropper: TForm_FileDropper
     Width = 459
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabOrder = 1
-    OnResize = Panel_OpennerDetailedResize
+    OnResize = Panel_OpenerDetailedResize
   end
   object Panel_Archiver: TPanel
     AnchorSideLeft.Control = Owner
@@ -57,11 +59,13 @@ object Form_FileDropper: TForm_FileDropper
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 320
+    Height = 152
     Top = 80
     Width = 120
     Anchors = [akTop, akLeft, akRight]
     Caption = 'File Archiver'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 2
     OnClick = Panel_ArchiverClick
     OnMouseMove = Panel_ArchiverMouseMove
@@ -75,11 +79,13 @@ object Form_FileDropper: TForm_FileDropper
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 80
-    Top = 400
+    Height = 248
+    Top = 232
     Width = 120
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'Text Formatter'
+    Font.Style = [fsBold]
+    ParentFont = False
     TabOrder = 3
     OnClick = Panel_FormatterClick
     OnMouseMove = Panel_FormatterMouseMove
@@ -93,11 +99,11 @@ object Form_FileDropper: TForm_FileDropper
     AnchorSideBottom.Control = Panel_Archiver
     AnchorSideBottom.Side = asrBottom
     Left = 120
-    Height = 320
+    Height = 152
     Top = 80
     Width = 459
     Anchors = [akTop, akLeft, akRight, akBottom]
-    ClientHeight = 320
+    ClientHeight = 152
     ClientWidth = 459
     TabOrder = 4
     object Memo_FileInfo: TMemo
@@ -156,19 +162,24 @@ object Form_FileDropper: TForm_FileDropper
     AnchorSideBottom.Control = Panel_Formatter
     AnchorSideBottom.Side = asrBottom
     Left = 120
-    Height = 80
-    Top = 400
+    Height = 248
+    Top = 232
     Width = 459
     Anchors = [akTop, akLeft, akRight, akBottom]
-    ClientHeight = 80
+    ClientHeight = 248
     ClientWidth = 459
     TabOrder = 5
-    object Memo_Formatter_Tmp: TMemo
+    OnResize = Panel_FormatterDetailedResize
+    object Memo_Formatter_Example: TMemo
+      AnchorSideLeft.Control = Panel_FormatterDetailed
+      AnchorSideTop.Control = Panel_FormatterDetailed
+      AnchorSideRight.Control = Panel_FormatterDetailed
+      AnchorSideRight.Side = asrBottom
       Left = 1
-      Height = 78
+      Height = 80
       Top = 1
       Width = 457
-      Align = alClient
+      Anchors = [akTop, akLeft, akRight]
       ScrollBars = ssBoth
       TabOrder = 0
     end
